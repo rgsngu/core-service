@@ -1,0 +1,33 @@
+@startuml
+title Ingestion Module - Class Diagram
+
+class WebSocketClient {
+  +connect()
+  +onMessage(json)
+  +disconnect()
+}
+
+class IngestionService {
+  +parseTick(json)
+  +validateTick(tick)
+  +publishToKafka(tick)
+}
+
+class OptionChainProcessor {
+  +parseOptionChain(json)
+  +mapGreeks()
+  +updateIV()
+}
+
+class TickDTO
+class OptionChainDTO
+class KafkaProducer
+
+WebSocketClient --> IngestionService : sends raw json
+IngestionService --> TickDTO : creates
+IngestionService --> KafkaProducer : publish(tick)
+
+KafkaProducer --> OptionChainProcessor : consumes tick
+OptionChainProcessor --> OptionChainDTO
+
+@enduml

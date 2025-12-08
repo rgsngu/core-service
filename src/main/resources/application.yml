@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: 6379
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    show-sql: true
+ingestion:
+  poll-rate-ms: 1000
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+zerodha:
+  api-key: ${ZERODHA_API_KEY:}
+  access-token: ${ZERODHA_ACCESS_TOKEN:}
+trading:
+  mode: paper

@@ -1,0 +1,38 @@
+@startuml
+title Tick → AIM → Strategy → Order - Sequence Diagram
+
+actor MarketData
+participant WebSocketClient
+participant IngestionService
+participant Kafka
+participant OptionChainProcessor
+participant AIMEngine
+participant StrategyEngine
+participant Strategy
+participant RiskManager
+participant OrderExecutionService
+participant BrokerAdapter
+participant Broker
+
+MarketData -> WebSocketClient : sendTick()
+WebSocketClient -> IngestionService : onMessage(json)
+IngestionService -> IngestionService : parseTick()
+IngestionService -> Kafka : publish(tick)
+
+Kafka -> OptionChainProcessor : consume(tick)
+OptionChainProcessor -> AIMEngine : enrichedTick
+
+AIMEngine -> AIMEngine : analyzeMarketIntent()
+AIMEngine -> PatternDetector : detectPatterns()
+AIMEngine -> StrategyEngine : sendSignal(signal)
+
+StrategyEngine -> StrategyEngine : evaluateSignals()
+StrategyEngine -> Strategy : run()
+
+Strategy -> RiskManager : requestOrder()
+RiskManager -> OrderExecutionService : validateAndExecute()
+
+OrderExecutionService -> BrokerAdapter : sendOrder()
+BrokerAdapter -> Broker : executeOrder()
+
+@enduml

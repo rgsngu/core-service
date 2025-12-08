@@ -1,0 +1,26 @@
+@startuml
+title Order Execution Module - Class Diagram
+
+class OrderExecutionService {
+  +createOrder()
+  +modifyOrder()
+  +cancelOrder()
+  +placeOrder()
+}
+
+class OrderDTO {
+  +symbol
+  +qty
+  +type
+  +price
+}
+
+class BrokerAdapter {
+  +sendOrder(order)
+  +checkOrderStatus(id)
+}
+
+OrderExecutionService --> OrderDTO
+OrderExecutionService --> BrokerAdapter
+
+@enduml

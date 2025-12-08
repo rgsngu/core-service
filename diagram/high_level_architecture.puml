@@ -1,0 +1,58 @@
+@startuml
+title High Level Architecture - AIM Trading System
+
+package "Market Data" {
+  [Market Data Provider]
+}
+
+package "Ingestion Layer" {
+  [WebSocketClient]
+  [IngestionService]
+  [OptionChainProcessor]
+}
+
+package "Kafka" {
+  [TicksTopic]
+}
+
+package "AIM Engine" {
+  [AIMEngine]
+  [PatternDetector]
+  [MLPredictor]
+}
+
+package "Strategy Engine" {
+  [StrategyEngine]
+  [ORBOStrategy]
+  [CPRStrategy]
+  [ScalpingStrategy]
+}
+
+package "Risk Management" {
+  [RiskManager]
+}
+
+package "Order Execution" {
+  [OrderExecutionService]
+  [BrokerAdapter]
+}
+
+[Market Data Provider] --> [WebSocketClient]
+[WebSocketClient] --> [IngestionService]
+[IngestionService] --> [TicksTopic]
+[TicksTopic] --> [OptionChainProcessor]
+[OptionChainProcessor] --> [AIMEngine]
+
+[AIMEngine] --> [PatternDetector]
+[AIMEngine] --> [MLPredictor]
+[AIMEngine] --> [StrategyEngine]
+
+[StrategyEngine] --> [ORBOStrategy]
+[StrategyEngine] --> [CPRStrategy]
+[StrategyEngine] --> [ScalpingStrategy]
+
+[StrategyEngine] --> [RiskManager]
+[RiskManager] --> [OrderExecutionService]
+[OrderExecutionService] --> [BrokerAdapter]
+
+@enduml

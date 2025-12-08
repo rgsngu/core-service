@@ -1,0 +1,33 @@
+@startuml
+title AIM Engine - Class Diagram
+
+class AIMEngine {
+  +analyzeMarketIntent(tick)
+  +detectTrend()
+  +detectReversal()
+  +detectVolatilitySpike()
+  +sendSignal()
+}
+
+class PatternDetector {
+  +detectCPR()
+  +detectORBO()
+  +detectBreakout()
+}
+
+class MLPredictor {
+  +predictTrend()
+  +predictDirection()
+}
+
+class Signal {
+  +type
+  +strength
+  +confidence
+}
+
+AIMEngine --> PatternDetector
+AIMEngine --> MLPredictor
+AIMEngine --> Signal : generates
+
+@enduml

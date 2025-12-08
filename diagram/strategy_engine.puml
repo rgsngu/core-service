@@ -1,0 +1,31 @@
+@startuml
+title Strategy Engine - Class Diagram
+
+class StrategyEngine {
+  +evaluateSignals(signal)
+  +pickStrategy(signal)
+  +executeStrategy(strategy)
+}
+
+abstract class Strategy {
+  +run()
+}
+
+class ORBOStrategy {
+  +run()
+}
+
+class CPRStrategy {
+  +run()
+}
+
+class ScalpingStrategy {
+  +run()
+}
+
+StrategyEngine --> Strategy : uses
+Strategy <|-- ORBOStrategy
+Strategy <|-- CPRStrategy
+Strategy <|-- ScalpingStrategy
+
+@enduml
