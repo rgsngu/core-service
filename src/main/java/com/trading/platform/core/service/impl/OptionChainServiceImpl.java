@@ -6,10 +6,12 @@ import com.trading.platform.core.entity.OptionStrike;
 import com.trading.platform.core.repository.OptionChainRepository;
 import com.trading.platform.core.service.OptionChainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+@Profile("!local")
 @Service
 @RequiredArgsConstructor
 public class OptionChainServiceImpl implements OptionChainService {

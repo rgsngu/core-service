@@ -1,14 +1,16 @@
 package com.trading.platform.core.client;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Component
-@Slf4j
-public class NseClient {
 
+@Component
+public class NseClient {
+    private static final Logger log =
+            LoggerFactory.getLogger(NseClient.class);
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String getOptionChainJson(String symbol) {

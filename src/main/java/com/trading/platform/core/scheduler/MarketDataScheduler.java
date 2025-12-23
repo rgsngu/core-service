@@ -1,32 +1,56 @@
-package com.trading.platform.core.scheduler;
+package com.trading.platform.core.ingestion.scheduler;
 
-import com.trading.platform.core.client.ZerodhaClient;
-import com.trading.platform.core.ingestion.IngestionService;
+import com.trading.platform.core.ingestion.client.ZerodhaClient;
+import com.trading.platform.core.ingestion.client.dto.QuoteResponse;
+import com.trading.platform.core.ingestion.impl.ZerodhaIngestionService;
 import com.trading.platform.core.model.Tick;
-import com.trading.platform.core.service.OptionChainIngestionService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Scheduler that polls Zerodha REST API at configured interval.
+ *
+ * Configurable property: ingestion.poll-rate-ms (default 1000)
+ */
 @Component
+@Profile("live")
 @RequiredArgsConstructor
-@Slf4j
 public class MarketDataScheduler {
+    private final Logger log = LoggerFactory.getLogger(MarketDataScheduler.class);
 
+    private final ZerodhaIngestionService ingestionService;
     private final ZerodhaClient zerodhaClient;
-    private final IngestionService ingestionService;
 
+    // NOTE: uses fixedRateString so you can change in application.yml without recompiling
     @Scheduled(fixedRateString = "${ingestion.poll-rate-ms:1000}")
-    public void fetch() {
+    @Profile("live")
+    public void poll() {
         try {
-            String json = zerodhaClient.getQuoteForBatch(List.of("NSE:RELIANCE","NSE:TCS"));
-            List<Tick> ticks = tickParser.parseBatch(json);
-            ticks.forEach(ingestionService::handleTick);
-        } catch(Exception e) {
-            log.error("market fetch failed", e);
+            String instrumentsEnv = System.getenv("INSTRUMENTS");
+            if (instrumentsEnv == null || instrumentsEnv.isBlank()) {
+                instrumentsEnv = "NSE:RELIANCE,NSE:TCS";
+            }
+            List<String> instruments =
+                    Arrays.stream(instrumentsEnv.split(","))
+                            .toList();
+            QuoteResponse response =
+                    zerodhaClient.getQuoteForBatch(instruments);
+
+            List<Tick> ticks = ingestionService.pollBatch();
+            for (Tick t : ticks) {
+                ingestionService.handleTick(t);
+            }
+        } catch (Exception e) {
+            log.error("Market data poll failed: {}", e.getMessage(), e);
         }
     }
+
+
 }

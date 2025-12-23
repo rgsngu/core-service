@@ -1,10 +1,7 @@
 package com.trading.platform.core.ingestion;
 
-import org.springframework.stereotype.Service;
+import com.trading.platform.core.aim.model.MarketSnapshot;
 
-@Service
-public class IngestionService {
-    public void handleIncomingTick(String json) {
-        // TODO: Parse and forward ticks
-    }
+public interface IngestionService {
+    MarketSnapshot getLatestSnapshot();
 }

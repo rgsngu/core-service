@@ -1,25 +1,6 @@
 spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceInitializationAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
-
-  data:
-    jpa:
-      repositories:
-        enabled: false
-
-  sql:
-    init:
-      mode: never
-  main:
-    banner-mode: off
-
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: <LIVE_KAFKA_BROKER>:9092
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -27,7 +8,6 @@ spring:
 
       properties:
         spring.json.add.type.headers: false
-
     consumer:
       group-id: aim-engine-group
       auto-offset-reset: earliest

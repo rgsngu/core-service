@@ -4,20 +4,23 @@ import com.trading.platform.core.client.NseClient;
 import com.trading.platform.core.entity.OptionChain;
 import com.trading.platform.core.repository.OptionChainRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class OptionChainIngestionService {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(OptionChainIngestionService.class);
 
     private final NseClient client;
     private final OptionChainParser parser;
     private final OptionChainRepository repository;
 
     public void ingest(String symbol) {
-        String json = client.getOptionChainJson(symbol);
+        String json = "";//client.getOptionChainJson(symbol);
 
         if (json == null) {
             log.error("Failed to fetch data for {}", symbol);
